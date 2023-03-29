@@ -19,5 +19,6 @@
 - ImageGenerator
 - JsonParser
 - HttpClient (url -> String body)
+- --Content (title;imageUrl)
 - ContentExtractorIMDB
 - ContentExtractorNASA
