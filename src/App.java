@@ -18,16 +18,18 @@ public class App {
         FileInputStream fis = new FileInputStream(".env");
         prop.load(fis);
 
-        String apiKeyIMDB = prop.getProperty("API_KEY_IMDB");
+        String apiKeyIMDB = System.getenv("API_KEY_IMDB");
+//        String apiKeyIMDB = prop.getProperty("API_KEY_IMDB");
         String apiKeyNASA = prop.getProperty("API_KEY_NASA");
         //- make http connection and get 250 top movies /////////////////////////////////////////
         //https://imdb-api.com/en/API/Top250Movies/k_6k2swk8s
         String url = "https://imdb-api.com/en/API/Top250Movies/"+ apiKeyIMDB;
+//        String url = "https://www.imdb.com/find/?q=series&ref_"+ apiKeyIMDB;
 
         // -nasa api https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY ///////////////////////////
         String url2 = "https://api.nasa.gov/planetary/apod?api_key="+ apiKeyNASA+ "&start_date=2022-06-12&end_date=2022-06-14";
 
-        URI address = URI.create(url2);
+        URI address = URI.create(url);
        //HttpClient client = HttpClient.newHttpClient();//can only declare var if Java can find Type auto
         var client = HttpClient.newHttpClient();
        HttpRequest request = HttpRequest.newBuilder(address).GET().build();

@@ -1,6 +1,6 @@
 # Videos
 - https://www.alura.com.br/imersao-java/aula01-consumindo-api-com-java
-# API 
+# API's 
 ## imdb
 - https://imdb-api.com/API
 ## nasa
