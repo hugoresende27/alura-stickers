@@ -8,7 +8,7 @@ import java.net.URL;
 
 public class ImageGenerator {
 
-    public void create(InputStream inputStream, String fileName) throws IOException {
+    public void create(InputStream inputStream, String fileName ) throws IOException {
 
         //read image
 //        BufferedImage originalImage = ImageIO.read(new File("assets/movie_image_bigger.jpg"));//read from assets folder
@@ -36,8 +36,8 @@ public class ImageGenerator {
 
 
         //write sentence in the new image
-//        var text  = "BEST!";
-        var text  = "BEST ONE!";
+        var text  = "BEST!";
+//        var text  = comment;
         var center = width/2 - (text.length() * 20);    //lets image each char 20px
         graphics.drawString(text, center , newHeigh - 100);
 

@@ -24,12 +24,11 @@ public class App {
         //- make http connection and get 250 top movies /////////////////////////////////////////
         //https://imdb-api.com/en/API/Top250Movies/k_6k2swk8s
         String url = "https://imdb-api.com/en/API/Top250Movies/"+ apiKeyIMDB;
-//        String url = "https://www.imdb.com/find/?q=series&ref_"+ apiKeyIMDB;
 
         // -nasa api https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY ///////////////////////////
         String url2 = "https://api.nasa.gov/planetary/apod?api_key="+ apiKeyNASA+ "&start_date=2022-06-12&end_date=2022-06-14";
 
-        URI address = URI.create(url);
+        URI address = URI.create(url2);
        //HttpClient client = HttpClient.newHttpClient();//can only declare var if Java can find Type auto
         var client = HttpClient.newHttpClient();
        HttpRequest request = HttpRequest.newBuilder(address).GET().build();
@@ -48,13 +47,12 @@ public class App {
 
         //show data //////////////////////////////////////////////////////////////////////////////
         int size = contentList.size();
-        for (int i = 0; i < size ; i++){
+        for (Map<String, String> content : contentList) {
 //            Map<String, String> movie = movieList.get(i);
-            Map<String, String> content = contentList.get(i);
-//        for (Map<String,String> movie : movieList){
+            //        for (Map<String,String> movie : movieList){
 
             System.out.println("\u001B[1mTitle : " + content.get("title") + "\u001B[0m");
-            System.out.println("Image : " +content.get("url") );
+            System.out.println("Image : " + content.get("url"));
 
             //for imdb
             /*
@@ -67,7 +65,7 @@ public class App {
             System.out.println("\n-----------------------------------------");
 
             //alura regex
-            String urlImage = content.get("url").replaceAll("(@+)(.*).jpg$","$1.jpg");
+            String urlImage = content.get("url").replaceAll("(@+)(.*).jpg$", "$1.jpg");
 
             /*
             //to IMDB
@@ -81,11 +79,12 @@ public class App {
             String fileName =  movie.get("title") + ".png";
              */
 
-            String fileName =  content.get("title").substring(0, 3) + ".png";
+            String fileName = content.get("title").substring(0, 3) + ".png";
 
             System.out.println(fileName);
             InputStream inputStrem = new URL(urlImage).openStream();
             var genImage = new ImageGenerator();
+//            String comment = "Hey !";
             genImage.create(inputStrem, fileName);
 //            System.exit(0);
         }
