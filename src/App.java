@@ -5,14 +5,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Properties;
 
-public class Main {
+public class App {
     public static void main(String[] args) throws Exception{
 
         // load environment variables from .env file
@@ -41,18 +39,20 @@ public class Main {
 
         //extract data ///////////////////////////////////////////////////////////////////////////
         var parser = new JsonParser();
-        List <Map <String, String>> movieList = parser.parse(body);
+        List <Map <String, String>> contentList = parser.parse(body);
 
-        System.out.println(movieList.size());//list size
-        System.out.println(movieList.get(0));//get item 0
+        System.out.println(contentList.size());//list size
+        System.out.println(contentList.get(0));//get item 0
 
         //show data //////////////////////////////////////////////////////////////////////////////
-        for (int i = 0; i < 10 ; i++){
-            Map<String, String> movie = movieList.get(i);
+        int size = contentList.size();
+        for (int i = 0; i < size ; i++){
+//            Map<String, String> movie = movieList.get(i);
+            Map<String, String> content = contentList.get(i);
 //        for (Map<String,String> movie : movieList){
 
-            System.out.println("\u001B[1mTitle : " + movie.get("title") + "\u001B[0m");
-            System.out.println("Image : " +movie.get("url") );
+            System.out.println("\u001B[1mTitle : " + content.get("title") + "\u001B[0m");
+            System.out.println("Image : " +content.get("url") );
 
             //for imdb
             /*
@@ -64,14 +64,23 @@ public class Main {
              */
             System.out.println("\n-----------------------------------------");
 
+            //alura regex
+            String urlImage = content.get("url").replaceAll("(@+)(.*).jpg$","$1.jpg");
+
+            /*
+            //to IMDB
             String urlImage = movie.get("url");
             int indexToCut = urlImage.indexOf('@');
             String cleanedUrl = urlImage.substring(0, indexToCut + 2);
             String urlImageFinal = cleanedUrl + ".jpg";
             System.out.println(urlImageFinal);
+            System.out.println(urlImage);
             int textSize = movie.get("title").length();
-//            String fileName =  movie.get("title").substring(0, 3) + ".png";
             String fileName =  movie.get("title") + ".png";
+             */
+
+            String fileName =  content.get("title").substring(0, 3) + ".png";
+
             System.out.println(fileName);
             InputStream inputStrem = new URL(urlImage).openStream();
             var genImage = new ImageGenerator();

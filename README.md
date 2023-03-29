@@ -13,3 +13,11 @@
 - make http connection and get 250 top movies
 - extract data (title, poster, rate)  parse data
 - show and manipulate data as wish
+
+--------------------------------------------
+- App
+- ImageGenerator
+- JsonParser
+- HttpClient (url -> String body)
+- ContentExtractorIMDB
+- ContentExtractorNASA
