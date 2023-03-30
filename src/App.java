@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.util.Properties;
 
 public class App {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception, ClientHttpException {
 
         // load environment variables from .env file
         Properties prop = new Properties();
@@ -18,10 +18,11 @@ public class App {
         //- make http connection and get 250 top movies /////////////////////////////////////////
         //https://imdb-api.com/en/API/Top250Movies/k_6k2swk8s
         String urlIMDB = "https://imdb-api.com/en/API/Top250Movies/" + apiKeyIMDB;
+//        String urlIMDB = "https://imdb-api-urlerror.com/en/API/Top250MoviesERRORTEST/" + apiKeyIMDB;
 //        String url = "https://imdb-api.com/en/API/MostPopularMovies/"+ apiKeyIMDB;
 //        String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
 //        String url ="https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
-        System.out.println(apiKeyIMDB);
+//        System.out.println(apiKeyIMDB);
 
         // -nasa api https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY ///////////////////////////
         String urlNASA = "https://api.nasa.gov/planetary/apod?api_key=" + apiKeyNASA + "&start_date=2022-06-12&end_date=2022-06-14";

@@ -6,7 +6,7 @@ import java.net.http.HttpResponse;
 
 public class ClientHttp {
 
-    public String searchData(String url) {
+    public String searchData(String url)  {
 
         try {
 //            URI address = URI.create(url);
@@ -15,11 +15,10 @@ public class ClientHttp {
             HttpRequest request = HttpRequest.newBuilder(URI.create(url)).GET().build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             return response.body();
-//            String body = response.body();
-//            System.out.println(body);
-//            return body;
+
         } catch (IOException | InterruptedException ex) {
-            throw new RuntimeException(ex);
+//            throw new RuntimeException(ex);
+            throw new ClientHttpException("Error getting data from url, check your URL, is not correct...");
         }
 
     }
