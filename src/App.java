@@ -29,15 +29,15 @@ public class App {
 
         //ClientHttp CLASS ////////////////////////////////////////////
         var http = new ClientHttp();
-//        String json = http.searchData(urlIMDB);
-        String json = http.searchData(urlNASA);
+        String json = http.searchData(urlIMDB);
+//        String json = http.searchData(urlNASA);
 
 
         //extract data Content CLASS NASA ///////////////////////////////////////////////////////////////////////////
-        ContentExtractorNASA extractor = new ContentExtractorNASA();
+//        ContentExtractorNASA extractor = new ContentExtractorNASA();
 
         //extract data Content CLASS IMDB ///////////////////////////////////////////////////////////////////////////
-//        ContentExtractorIMDB extractor = new ContentExtractorIMDB();
+        ContentExtractorIMDB extractor = new ContentExtractorIMDB();
 
         //create content list
         List<Content> contentsList = extractor.extractContent(json);
@@ -73,6 +73,7 @@ public class App {
 
 //                Content content = contentsList.get(i);
 
+
             String title = content.title();
             String fileName = title.substring(0, 3) + ".png";//IMDB
 //            String fileName = content.get("title").substring(0, 7) + ".png";//IMDB
@@ -88,7 +89,11 @@ public class App {
 //                devImage = new FileInputStream("my_images/bad.png");
 //            }
 
+            if (extractor.getClass().equals(ContentExtractorIMDB.class)) {
 
+                comment = extractor.rate(1);
+
+            }
             InputStream inputStream = new URL(content.imageUrl()).openStream();
 
             System.out.println(title);

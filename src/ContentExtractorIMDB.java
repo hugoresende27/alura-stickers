@@ -1,3 +1,4 @@
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,5 +26,17 @@ public class ContentExtractorIMDB implements ContentExtractor {
         }
 
         return contentsList;
+    }
+
+//    public int rate()
+
+    public String rate(int rate) {
+        if (rate >= 8) {
+            return "EXCELENT!";
+        } else {
+            return "MEH";
+        }
+
+
     }
 }
