@@ -12,12 +12,15 @@ public class App {
         FileInputStream fis = new FileInputStream(".env");
         prop.load(fis);
 
+        //export IMDB_API_KEY="k_6k2swk8s"
 //        String apiKeyIMDB = System.getenv("API_KEY_IMDB");
-        String apiKeyIMDB = prop.getProperty("API_KEY_IMDB");
-        String apiKeyNASA = prop.getProperty("API_KEY_NASA");
+//        System.out.println(apiKeyIMDB);
+//        System.exit(0);
+//        String apiKeyIMDB = prop.getProperty("API_KEY_IMDB");
+//        String apiKeyNASA = prop.getProperty("API_KEY_NASA");
         //- make http connection and get 250 top movies /////////////////////////////////////////
         //https://imdb-api.com/en/API/Top250Movies/k_6k2swk8s
-        String urlIMDB = "https://imdb-api.com/en/API/Top250Movies/" + apiKeyIMDB;
+//        String urlIMDB = "https://imdb-api.com/en/API/Top250Movies/" + apiKeyIMDB;
 //        String urlIMDB = "https://imdb-api-urlerror.com/en/API/Top250MoviesERRORTEST/" + apiKeyIMDB;
 //        String url = "https://imdb-api.com/en/API/MostPopularMovies/"+ apiKeyIMDB;
 //        String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
@@ -25,20 +28,24 @@ public class App {
 //        System.out.println(apiKeyIMDB);
 
         // -nasa api https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY ///////////////////////////
-        String urlNASA = "https://api.nasa.gov/planetary/apod?api_key=" + apiKeyNASA + "&start_date=2022-06-12&end_date=2022-06-14";
+//        String urlNASA = "https://api.nasa.gov/planetary/apod?api_key=" + apiKeyNASA + "&start_date=2022-06-12&end_date=2022-06-14";
 
+//        API api = API.NASA;
+//        API api = API.IMDB_TOP_MOVEIS;
+        API api = API.IMDB_TOP_SERIES;
+
+        String url = api.getUrl();
 
         //ClientHttp CLASS ////////////////////////////////////////////
         var http = new ClientHttp();
-        String json = http.searchData(urlIMDB);
-//        String json = http.searchData(urlNASA);
+        String json = http.searchData(url);
 
-
+        ContentExtractor extractor = api.getExtractor();
         //extract data Content CLASS NASA ///////////////////////////////////////////////////////////////////////////
 //        ContentExtractorNASA extractor = new ContentExtractorNASA();
 
         //extract data Content CLASS IMDB ///////////////////////////////////////////////////////////////////////////
-        ContentExtractorIMDB extractor = new ContentExtractorIMDB();
+//        ContentExtractorIMDB extractor = new ContentExtractorIMDB();
 
         //create content list
         List<Content> contentsList = extractor.extractContent(json);
@@ -76,7 +83,7 @@ public class App {
 
 
             String title = content.title();
-            String fileName = title.substring(0, 3) + ".png";//IMDB
+            String fileName = title.substring(0, 3)+ title.substring(title.length() - 3) + ".png";//IMDB
 //            String fileName = content.get("title").substring(0, 7) + ".png";//IMDB
 //            double imdbRate = Double.parseDouble(content.get("imDbRating"));
 
@@ -90,11 +97,7 @@ public class App {
 //                devImage = new FileInputStream("my_images/bad.png");
 //            }
 
-            if (extractor.getClass().equals(ContentExtractorIMDB.class)) {
 
-                comment = extractor.rate(1);
-
-            }
             InputStream inputStream = new URL(content.imageUrl()).openStream();
 
             System.out.println(title);
