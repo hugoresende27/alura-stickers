@@ -28,7 +28,7 @@ public class App {
         // -nasa api https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY ///////////////////////////
         String url2 = "https://api.nasa.gov/planetary/apod?api_key="+ apiKeyNASA+ "&start_date=2022-06-12&end_date=2022-06-14";
 
-        URI address = URI.create(url2);
+        URI address = URI.create(url);
        //HttpClient client = HttpClient.newHttpClient();//can only declare var if Java can find Type auto
         var client = HttpClient.newHttpClient();
        HttpRequest request = HttpRequest.newBuilder(address).GET().build();
@@ -65,27 +65,27 @@ public class App {
             System.out.println("\n-----------------------------------------");
 
             //alura regex
-            String urlImage = content.get("url").replaceAll("(@+)(.*).jpg$", "$1.jpg");
+            //String urlImage = content.get("url").replaceAll("(@+)(.*).jpg$", "$1.jpg");
 
-            /*
+
             //to IMDB
-            String urlImage = movie.get("url");
+            String urlImage = content.get("url");
             int indexToCut = urlImage.indexOf('@');
             String cleanedUrl = urlImage.substring(0, indexToCut + 2);
             String urlImageFinal = cleanedUrl + ".jpg";
             System.out.println(urlImageFinal);
             System.out.println(urlImage);
-            int textSize = movie.get("title").length();
-            String fileName =  movie.get("title") + ".png";
-             */
+            int textSize = content.get("title").length();
+            String fileName =  content.get("title") + ".png";
 
-            String fileName = content.get("title").substring(0, 3) + ".png";
+
+            //String fileName = content.get("title").substring(0, 3) + ".png";
 
             System.out.println(fileName);
-            InputStream inputStrem = new URL(urlImage).openStream();
+            InputStream inputStream = new URL(urlImage).openStream();
             var genImage = new ImageGenerator();
-//            String comment = "Hey !";
-            genImage.create(inputStrem, fileName);
+            String comment = "Hey !";
+            genImage.create(inputStream, fileName, comment);
 //            System.exit(0);
         }
     }

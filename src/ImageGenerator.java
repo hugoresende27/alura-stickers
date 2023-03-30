@@ -1,5 +1,9 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.font.FontRenderContext;
+import java.awt.font.TextLayout;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,7 +12,7 @@ import java.net.URL;
 
 public class ImageGenerator {
 
-    public void create(InputStream inputStream, String fileName ) throws IOException {
+    public void create(InputStream inputStream, String fileName, String comment ) throws IOException {
 
         //read image
 //        BufferedImage originalImage = ImageIO.read(new File("assets/movie_image_bigger.jpg"));//read from assets folder
@@ -30,16 +34,48 @@ public class ImageGenerator {
         graphics.drawImage(originalImage, 0, 0, null);
 
         //customize font
-        var font = new Font(Font.SANS_SERIF, Font.BOLD, 64);
+        var font = new Font("Impact", Font.BOLD, 80);
         graphics.setColor(Color.GREEN);
         graphics.setFont(font);
+        graphics.setStroke(new BasicStroke(2f)); // Set border width
 
 
         //write sentence in the new image
         var text  = "BEST!";
-//        var text  = comment;
+        //my solution to center text
         var center = width/2 - (text.length() * 20);    //lets image each char 20px
-        graphics.drawString(text, center , newHeigh - 100);
+        var centerHeight = newHeigh - 100;
+
+        //alura solution
+        FontMetrics fontMetrics = graphics.getFontMetrics();
+        Rectangle2D rectangle = fontMetrics.getStringBounds(text,graphics);
+        int textWidth = (int) rectangle.getWidth();
+        var center2 = (width - textWidth) / 2 ;
+
+
+        graphics.drawString(text, center , centerHeight);
+
+        //to outline, my solution
+//        graphics.setColor(Color.GREEN);
+//        graphics.drawString(text, center - 1, newHeigh - 101); // Draw the string again with offset
+
+
+        //to outline, alura solution
+        //textLayout
+        FontRenderContext fontRenderContext = graphics.getFontRenderContext();
+        var textLayout = new TextLayout(text, font, fontRenderContext);
+        //pencil
+        Shape outline = textLayout.getOutline(null);
+        AffineTransform transform = graphics.getTransform();
+        transform.translate(center, centerHeight);
+        graphics.setTransform(transform);
+        //
+        var outlineStroke = new BasicStroke(width * 0.004f);
+        graphics.setStroke(outlineStroke);
+        graphics.setColor(Color.BLACK);
+        graphics.draw(outline);
+        graphics.setClip(outline);
+
 
         //my custom image
         BufferedImage myImage = ImageIO.read(new File("src/images/my_image2.jpg"));
