@@ -1,60 +1,57 @@
 import java.io.InputStream;
-import java.net.URI;
 import java.net.URL;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
 import java.util.List;
-import java.util.Map;
 import java.io.FileInputStream;
 import java.util.Properties;
 
 public class App {
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
 
         // load environment variables from .env file
         Properties prop = new Properties();
         FileInputStream fis = new FileInputStream(".env");
         prop.load(fis);
 
-        String apiKeyIMDB = System.getenv("API_KEY_IMDB");
-//        String apiKeyIMDB = prop.getProperty("API_KEY_IMDB");
+//        String apiKeyIMDB = System.getenv("API_KEY_IMDB");
+        String apiKeyIMDB = prop.getProperty("API_KEY_IMDB");
         String apiKeyNASA = prop.getProperty("API_KEY_NASA");
         //- make http connection and get 250 top movies /////////////////////////////////////////
         //https://imdb-api.com/en/API/Top250Movies/k_6k2swk8s
-        String url = "https://imdb-api.com/en/API/Top250Movies/"+ apiKeyIMDB;
+        String urlIMDB = "https://imdb-api.com/en/API/Top250Movies/" + apiKeyIMDB;
+//        String url = "https://imdb-api.com/en/API/MostPopularMovies/"+ apiKeyIMDB;
+//        String url = "https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/NASA-APOD.json";
+//        String url ="https://raw.githubusercontent.com/alura-cursos/imersao-java-2-api/main/TopMovies.json";
+        System.out.println(apiKeyIMDB);
 
         // -nasa api https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY ///////////////////////////
-        String url2 = "https://api.nasa.gov/planetary/apod?api_key="+ apiKeyNASA+ "&start_date=2022-06-12&end_date=2022-06-14";
-
-        URI address = URI.create(url);
-       //HttpClient client = HttpClient.newHttpClient();//can only declare var if Java can find Type auto
-        var client = HttpClient.newHttpClient();
-       HttpRequest request = HttpRequest.newBuilder(address).GET().build();
-       HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
-       String body = response.body();
+        String urlNASA = "https://api.nasa.gov/planetary/apod?api_key=" + apiKeyNASA + "&start_date=2022-06-12&end_date=2022-06-14";
 
 
-        System.out.println(body);
+        //ClientHttp CLASS ////////////////////////////////////////////
+        var http = new ClientHttp();
+//        String json = http.searchData(urlIMDB);
+        String json = http.searchData(urlNASA);
 
-        //extract data ///////////////////////////////////////////////////////////////////////////
-        var parser = new JsonParser();
-        List <Map <String, String>> contentList = parser.parse(body);
 
-        System.out.println(contentList.size());//list size
-        System.out.println(contentList.get(0));//get item 0
+        //extract data Content CLASS NASA ///////////////////////////////////////////////////////////////////////////
+        ContentExtractorNASA extractor = new ContentExtractorNASA();
 
-        //show data //////////////////////////////////////////////////////////////////////////////
-        int size = contentList.size();
-        for (Map<String, String> content : contentList) {
-//            Map<String, String> movie = movieList.get(i);
-            //        for (Map<String,String> movie : movieList){
+        //extract data Content CLASS IMDB ///////////////////////////////////////////////////////////////////////////
+//        ContentExtractorIMDB extractor = new ContentExtractorIMDB();
 
-            System.out.println("\u001B[1mTitle : " + content.get("title") + "\u001B[0m");
-            System.out.println("Image : " + content.get("url"));
+        //create content list
+        List<Content> contentsList = extractor.extractContent(json);
+        var generator = new ImageGenerator();
 
-            //for imdb
+
+        //show and manipulate data //////////////////////////////////////////////////////////////////////////////
+        for (Content content : contentsList) {
+
+
+//            System.out.println("\u001B[1mTitle : " + content.get("title") + "\u001B[0m");
+//            System.out.println("Image : " + content.get("url"));
+
+            //for imdb rate
             /*
             System.out.println("\u001B[34mRating : " +movie.get("imDbRating") + "\u001B[0m");
             int rate = Math.round(Float.parseFloat(movie.get("imDbRating")));
@@ -64,28 +61,38 @@ public class App {
              */
             System.out.println("\n-----------------------------------------");
 
-            //alura regex
-            //String urlImage = content.get("url").replaceAll("(@+)(.*).jpg$", "$1.jpg");
-
-
             //to IMDB
-            String urlImage = content.get("url");
-            int indexToCut = urlImage.indexOf('@');
-            String cleanedUrl = urlImage.substring(0, indexToCut + 2);
-            String urlImageFinal = cleanedUrl + ".jpg";
-            System.out.println(urlImageFinal);
-            System.out.println(urlImage);
-            int textSize = content.get("title").length();
-            String fileName =  content.get("title") + ".png";
+//            String urlImage = content.get("image");
+//            int indexToCut = urlImage.indexOf('@');
+//            String cleanedUrl = urlImage.substring(0, indexToCut + 2);
+//            String urlImageFinal = cleanedUrl + ".jpg";
+//            System.out.println(urlImageFinal);
+//            System.out.println(urlImage);
+//            int textSize = content.get("title").length();
+//            String fileName =  content.get("title") + ".png";   //NASA
+
+//                Content content = contentsList.get(i);
+
+            String title = content.title();
+            String fileName = title.substring(0, 3) + ".png";//IMDB
+//            String fileName = content.get("title").substring(0, 7) + ".png";//IMDB
+//            double imdbRate = Double.parseDouble(content.get("imDbRating"));
+
+            String comment = "";
+            InputStream devImage;
+//            if (imdbRate >= 8){
+            comment = "EXCELENT!";
+            devImage = new FileInputStream("my_images/good.png");
+//            } else {
+//                comment ="meh";
+//                devImage = new FileInputStream("my_images/bad.png");
+//            }
 
 
-            //String fileName = content.get("title").substring(0, 3) + ".png";
+            InputStream inputStream = new URL(content.imageUrl()).openStream();
 
-            System.out.println(fileName);
-            InputStream inputStream = new URL(urlImage).openStream();
-            var genImage = new ImageGenerator();
-            String comment = "Hey !";
-            genImage.create(inputStream, fileName, comment);
+            System.out.println(title);
+            generator.create(inputStream, fileName, comment, devImage);
 //            System.exit(0);
         }
     }

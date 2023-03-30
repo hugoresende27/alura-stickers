@@ -12,7 +12,7 @@ import java.net.URL;
 
 public class ImageGenerator {
 
-    public void create(InputStream inputStream, String fileName, String comment ) throws IOException {
+    public void create(InputStream inputStream, String fileName, String comment, InputStream inputStreamOver) throws IOException {
 
         //read image
 //        BufferedImage originalImage = ImageIO.read(new File("assets/movie_image_bigger.jpg"));//read from assets folder
@@ -22,16 +22,23 @@ public class ImageGenerator {
 //        InputStream inputStrem = new URL("https://m.media-amazon.com/images/M/MV5BY2Q2NDI1MjUtM2Q5ZS00MTFlLWJiYWEtNTZmNjQ3OGJkZDgxXkEyXkFqcGdeQXVyNTI4MjkwNjA@.jpg").openStream();
         BufferedImage originalImage = ImageIO.read(inputStream);
 
+
+        //create new image in memory with new size and filter
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();
         int newHeigh = height + 200;
+        BufferedImage newImage = new BufferedImage(width, newHeigh, BufferedImage.TRANSLUCENT);
 
-        //create new image in memory with new size and filter
-        BufferedImage newImage = new BufferedImage(width,newHeigh, BufferedImage.TRANSLUCENT);
-        Graphics2D graphics =  (Graphics2D) newImage.getGraphics();
 
         //copy original image to new image, graphics is like a pen to write in this image
+        Graphics2D graphics = (Graphics2D) newImage.getGraphics();
         graphics.drawImage(originalImage, 0, 0, null);
+
+        //draw my_image, passed as inputStreamOver
+        BufferedImage imageOver = ImageIO.read(inputStreamOver);
+        int positionImageOverY = newHeigh - imageOver.getHeight();
+        graphics.drawImage(imageOver, 0, positionImageOverY, null);
+
 
         //customize font
         var font = new Font("Impact", Font.BOLD, 80);
@@ -41,19 +48,18 @@ public class ImageGenerator {
 
 
         //write sentence in the new image
-        var text  = "BEST!";
         //my solution to center text
-        var center = width/2 - (text.length() * 20);    //lets image each char 20px
+        var center = width / 2 - (comment.length() * 20);    //lets image each char 20px
         var centerHeight = newHeigh - 100;
 
         //alura solution
         FontMetrics fontMetrics = graphics.getFontMetrics();
-        Rectangle2D rectangle = fontMetrics.getStringBounds(text,graphics);
+        Rectangle2D rectangle = fontMetrics.getStringBounds(comment, graphics);
         int textWidth = (int) rectangle.getWidth();
-        var center2 = (width - textWidth) / 2 ;
+        var center2 = (width - textWidth) / 2;
 
 
-        graphics.drawString(text, center , centerHeight);
+        graphics.drawString(comment, center, centerHeight);
 
         //to outline, my solution
 //        graphics.setColor(Color.GREEN);
@@ -63,7 +69,7 @@ public class ImageGenerator {
         //to outline, alura solution
         //textLayout
         FontRenderContext fontRenderContext = graphics.getFontRenderContext();
-        var textLayout = new TextLayout(text, font, fontRenderContext);
+        var textLayout = new TextLayout(comment, font, fontRenderContext);
         //pencil
         Shape outline = textLayout.getOutline(null);
         AffineTransform transform = graphics.getTransform();
@@ -92,12 +98,12 @@ public class ImageGenerator {
         }
         System.out.println(myHeight);
         System.out.println(myWidth);
-        BufferedImage resizedImage = new BufferedImage(myWidth, myHeight,myImage.getType());
+        BufferedImage resizedImage = new BufferedImage(myWidth, myHeight, myImage.getType());
 
 //        graphics.drawImage(myImage, 0,0,null);
 
         //write new image in new file
-        ImageIO.write(newImage, "png", new File("assets/"+fileName));
+        ImageIO.write(newImage, "png", new File("assets/" + fileName));
 
     }
 
